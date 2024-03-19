@@ -8,12 +8,12 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import java.time.Duration;
 import java.util.Collections;
 
-public class StateDataSubscriber implements Subscriber<String, Double> {
+public class StateDataConsumer implements Consumer<String, Double> {
 
 
     private final KafkaConfig kafkaConfig;
 
-    public StateDataSubscriber(KafkaConfig config) {
+    public StateDataConsumer(KafkaConfig config) {
         this.kafkaConfig = config;
     }
 

@@ -8,11 +8,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.List;
 
-public class StateDataPublisher implements Publisher<String, Double> {
+public class StateDataProducer implements Producer<String, Double> {
 
     private final KafkaConfig kafkaConfig;
 
-    public StateDataPublisher(KafkaConfig config) {
+    public StateDataProducer(KafkaConfig config) {
         this.kafkaConfig = config;
     }
 

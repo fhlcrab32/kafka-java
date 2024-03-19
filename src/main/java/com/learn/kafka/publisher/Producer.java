@@ -2,7 +2,7 @@ package com.learn.kafka.publisher;
 
 import java.util.List;
 
-public interface Publisher<T,U> {
+public interface Producer<T,U> {
 
     List<T> getSourceData();
 

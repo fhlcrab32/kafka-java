@@ -4,11 +4,15 @@ import com.learn.kafka.config.KafkaConfig;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class StateDataProducer implements Producer<String, Double> {
+
+    private final Logger log = LoggerFactory.getLogger(StateDataProducer.class);
 
     private final KafkaConfig kafkaConfig;
 
@@ -37,14 +41,14 @@ public class StateDataProducer implements Producer<String, Double> {
             {
                 producer.send(producerRecord, (recordMetadata, e) -> {
                     if (recordMetadata != null) {
-                        System.out.format("Sending message with key: value - %s, %s\n", key, message.toString());
+                        log.info("Sending message {}: {}", key, message.toString());
                     } else {
-                        System.out.format("Sending failed for key: %s, message: %s", key, message);
+                        log.error("Sending failed for key: {}, message: {}", key, message, e);
                     }
                     try {
                         Thread.sleep(200);
                     } catch (InterruptedException ex) {
-                        throw new RuntimeException(ex);
+                        log.error("InterruptedException thrown while sleeping", e);
                     }
                 });
             }

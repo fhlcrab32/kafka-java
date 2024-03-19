@@ -11,7 +11,7 @@ private val jacksonVersion = "2.17.0"
 private val junitVersion = "5.9.1"
 private val kafkaVersion = "3.7.0"
 private val kafkaAvroVersion = "7.6.0"
-private val slf4jVersion ="2.0.12"
+private val logbackVersion ="1.5.3"
 
 group = "com.learn"
 version = "1.0-SNAPSHOT"
@@ -28,8 +28,8 @@ dependencies {
     implementation("org.apache.kafka:kafka-clients:$kafkaVersion")
     implementation("org.apache.kafka:kafka-streams:$kafkaVersion")
     implementation("io.confluent:kafka-avro-serializer:$kafkaAvroVersion")
-    implementation("org.apache.avro:avro:$avroVersion")
-    testImplementation("org.slf4j:slf4j-simple:$slf4jVersion")
+    implementation("ch.qos.logback:logback-classic:$logbackVersion")
+
 
     testImplementation(platform("org.junit:junit-bom:$junitVersion"))
     testImplementation("org.junit.jupiter:junit-jupiter")

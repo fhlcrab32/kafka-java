@@ -1,6 +1,7 @@
-package com.learn.kafka.subscriber;
+package com.learn.kafka.consumer;
 
 import com.learn.kafka.config.KafkaConfig;
+import com.learn.kafka.config.Topic;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -14,29 +15,30 @@ public class StateDataConsumer implements Consumer<String, Double> {
 
     private final Logger log = LoggerFactory.getLogger(StateDataConsumer.class);
 
-
     private final KafkaConfig kafkaConfig;
 
-    public StateDataConsumer(KafkaConfig config) {
+    private final Topic topic;
+
+    public StateDataConsumer(KafkaConfig config,
+                             Topic topic) {
         this.kafkaConfig = config;
+        this.topic = topic;
     }
 
 
     @Override
     public void receive() {
-        String topicName;
         KafkaConsumer<String, Double> consumer = null;
         try {
-            consumer = kafkaConfig.buildConsumer();
+            consumer = kafkaConfig.buildConsumer(this.topic);
             long startTime = System.currentTimeMillis();
-            topicName = kafkaConfig.getTopicName();
-            consumer.subscribe(Collections.singletonList(topicName));
-            log.info("Listening to topic {}", topicName);
+            consumer.subscribe(Collections.singletonList(this.topic.getName()));
+            log.info("Listening to topic {}", this.topic);
             while (System.currentTimeMillis() - startTime < 45000) {
                 ConsumerRecords<String, Double> records = consumer.poll(Duration.ofMillis(100));
                 records.forEach(this::processRecord);
             }
-            log.info("Stopped consuming from topic {}", topicName);
+            log.info("Stopped consuming from topic {}", this.topic);
         } finally {
             assert consumer != null;
             consumer.close();
@@ -45,7 +47,7 @@ public class StateDataConsumer implements Consumer<String, Double> {
 
     @Override
     public void processRecord(ConsumerRecord<String, Double> record) {
-       log.info("Received key: {}, value: {} from partition: {}",
-               record.key(), record.value(), record.partition());
+        log.info("Received key: {}, value: {} from partition: {}",
+                record.key(), record.value(), record.partition());
     }
 }

@@ -1,5 +1,8 @@
 package com.learn.kafka.config;
 
+import io.confluent.kafka.serializers.KafkaAvroDeserializer;
+import io.confluent.kafka.serializers.KafkaAvroSerializer;
+import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.DoubleDeserializer;
@@ -19,11 +22,19 @@ public class KafkaConfigFactory {
                 properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
                         DoubleSerializer.class.getName());
             }
-            case CONNECT -> {
+            case CONNECT_STANDALONE -> {
                 properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
                         DoubleSerializer.class.getName());
                 properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
                         StringSerializer.class.getName());
+            }
+            case CONNECT_DISTRIBUTED ->   {
+                properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
+                        DoubleSerializer.class.getName());
+                properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
+                        KafkaAvroSerializer.class.getName());
+                properties.setProperty(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG,
+                        "http://localhost:8081");
             }
         }
     }
@@ -36,12 +47,20 @@ public class KafkaConfigFactory {
                 properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
                         DoubleDeserializer.class.getName());
             }
-           case CONNECT -> {
+           case CONNECT_STANDALONE -> {
                 properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
                         DoubleDeserializer.class.getName());
                 properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
                         StringDeserializer.class.getName());
             }
+           case CONNECT_DISTRIBUTED ->   {
+               properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
+                       DoubleDeserializer.class.getName());
+               properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
+                       KafkaAvroDeserializer.class.getName());
+               properties.setProperty(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG,
+                       "http://localhost:8081");
+           }
         }
     }
 }

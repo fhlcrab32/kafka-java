@@ -1,7 +1,9 @@
+import org.apache.avro.tool.SpecificCompilerTool
+
 plugins {
     id("java")
-    id("com.github.davidmc24.gradle.plugin.avro") version "1.9.1"
     kotlin("jvm")
+    application
 }
 
 private val assertVersion = "3.25.3"
@@ -28,13 +30,50 @@ dependencies {
     implementation("org.apache.kafka:kafka-clients:$kafkaVersion")
     implementation("org.apache.kafka:kafka-streams:$kafkaVersion")
     implementation("io.confluent:kafka-avro-serializer:$kafkaAvroVersion")
+    implementation("org.apache.avro:avro:$avroVersion")
+//    implementation("org.apache.avro:avro-tools:$avroVersion")
+
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
 
 
     testImplementation(platform("org.junit:junit-bom:$junitVersion"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.assertj:assertj-core:$assertVersion")
+}
 
+sourceSets {
+    main {
+        java {
+            srcDirs("build/avro-generated")
+        }
+    }
+}
+
+val avroCodeGen = "avroCodeGen"
+
+tasks.create(avroCodeGen) {
+    doLast {
+        SpecificCompilerTool().run(
+            System.`in`,
+            System.out,
+            System.err,
+            listOf(
+                "-encoding", "UTF-8",
+                "-string",
+                "-fieldVisibility", "private",
+                "-noSetters",
+                "-bigDecimal",
+                "schema",
+                "$projectDir/src/main/avro",
+                "$projectDir/src/main/java"
+            )
+        )
+    }
+}
+
+
+tasks.withType<JavaCompile>() {
+    dependsOn(avroCodeGen)
 }
 
 tasks.test {

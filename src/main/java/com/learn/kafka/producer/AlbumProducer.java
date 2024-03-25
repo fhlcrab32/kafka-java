@@ -5,6 +5,7 @@ import com.learn.kafka.config.Topic;
 import com.learn.kafka.model.Album;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.errors.InterruptException;
 import org.apache.kafka.common.errors.SerializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,10 +58,10 @@ public class AlbumProducer implements MessageProducer<Double, Album> {
                     }
                 });
             }
-        } catch (SerializationException e) {
-            log.error("SerializationException: {}",e.getMessage(), e);
+        } catch (SerializationException | InterruptException e) {
+            log.error("Exception occurred: {}",e.getMessage(), e);
         } catch (Exception e) {
-            log.error("Exception: {}",e.getMessage(), e);
+            log.error("Generic Exception occurred: {}",e.getMessage(), e);
         }
     }
 }

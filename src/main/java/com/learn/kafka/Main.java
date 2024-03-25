@@ -3,6 +3,7 @@ package com.learn.kafka;
 import com.learn.kafka.config.KafkaConfig;
 import com.learn.kafka.config.Topic;
 import com.learn.kafka.consumer.AlbumConsumer;
+import com.learn.kafka.consumer.LogConsumer;
 import com.learn.kafka.consumer.MessageConsumer;
 import com.learn.kafka.consumer.StateDataConsumer;
 import com.learn.kafka.model.Album;
@@ -27,22 +28,26 @@ public class Main {
 
     public static void main(String[] args) {
         KafkaConfig config = KafkaConfig.getInstance();
-//        executorService.execute(() -> consumeStateData(config));
-//        executorService.execute(() -> produceStateData(config));
-//        executorService.execute(() ->  new LogConsumer(config, Topic.CONNECT_STANDALONE).receive());
-//        executorService.execute(() -> produceLogs(config));
         executorService.execute(() ->  new AlbumConsumer(config, Topic.CONNECT_DISTRIBUTED).receive());
+        executorService.execute(() -> consumeStateData(config));
+        executorService.execute(() ->  new LogConsumer(config, Topic.CONNECT_STANDALONE).receive());
+
+
         executorService.execute(() -> produceAlbumData(config));
+        executorService.execute(() -> produceStateData(config));
+        executorService.execute(() -> produceLogs(config));
+
         shutdownTasks();
     }
 
     private static void produceAlbumData(KafkaConfig config) {
         try {
             MessageProducer<Double, Album> producer = new AlbumProducer(config, Topic.CONNECT_DISTRIBUTED);
-            Thread.sleep(1000);
+            Thread.sleep(100);
             log.info("Sending messages to topic {}", Topic.CONNECT_DISTRIBUTED);
             producer.getSourceData().forEach(producer::send);
         } catch (InterruptedException e) {
+            log.error("InterruptedException occurred: {}", e.getMessage(),e);
             throw new RuntimeException(e);
         }
     }

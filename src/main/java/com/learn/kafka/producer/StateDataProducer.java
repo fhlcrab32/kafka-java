@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-public class StateDataProducer implements Producer<String, Double> {
+public class StateDataProducer implements MessageProducer<String, Double> {
 
     private final Logger log = LoggerFactory.getLogger(StateDataProducer.class);
 

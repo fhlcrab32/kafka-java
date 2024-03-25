@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.time.Duration;
 import java.util.Collections;
 
-public class AlbumConsumer implements Consumer<Double, Album> {
+public class AlbumConsumer implements MessageConsumer<Double, Album> {
 
     private final Logger log = LoggerFactory.getLogger(LogConsumer.class);
 
@@ -37,7 +37,9 @@ public class AlbumConsumer implements Consumer<Double, Album> {
             log.info("Listening to topic {}", this.topic);
             while (System.currentTimeMillis() - startTime < 45000) {
                 ConsumerRecords<Double, Album> records = consumer.poll(Duration.ofMillis(100));
-                records.forEach(this::processRecord);
+                for(ConsumerRecord<Double, Album> record : records) {
+                    process(record, log::info);
+                }
             }
             log.info("Stopped consuming from topic {}", this.topic);
         } catch (Exception e) {
@@ -46,12 +48,6 @@ public class AlbumConsumer implements Consumer<Double, Album> {
             assert consumer != null;
             consumer.close();
         }
-    }
-
-    @Override
-    public void processRecord(ConsumerRecord<Double, Album> record) {
-        log.info("Received key: {}, value: {} from partition: {}",
-                record.key(), record.value(), record.partition());
     }
 
 }

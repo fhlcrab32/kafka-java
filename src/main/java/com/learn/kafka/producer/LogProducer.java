@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class LogProducer implements Producer<Double, String>{
+public class LogProducer implements MessageProducer<Double, String> {
 
     private final Logger log = LoggerFactory.getLogger(LogProducer.class);
 

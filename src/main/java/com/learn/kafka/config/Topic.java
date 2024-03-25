@@ -2,7 +2,8 @@ package com.learn.kafka.config;
 
 public enum Topic {
     SIMPLE("states"),
-    CONNECT("connectlog");
+    CONNECT_STANDALONE("connect-log"),
+    CONNECT_DISTRIBUTED("connect-dist");
 
     private final String name;
 

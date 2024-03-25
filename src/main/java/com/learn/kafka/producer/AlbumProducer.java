@@ -5,12 +5,13 @@ import com.learn.kafka.config.Topic;
 import com.learn.kafka.model.Album;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.errors.SerializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-public class AlbumProducer implements Producer<Double, Album> {
+public class AlbumProducer implements MessageProducer<Double, Album> {
 
     private final Logger log = LoggerFactory.getLogger(AlbumProducer.class);
 
@@ -56,6 +57,10 @@ public class AlbumProducer implements Producer<Double, Album> {
                     }
                 });
             }
+        } catch (SerializationException e) {
+            log.error("SerializationException: {}",e.getMessage(), e);
+        } catch (Exception e) {
+            log.error("Exception: {}",e.getMessage(), e);
         }
     }
 }

@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import java.time.Duration;
 import java.util.Collections;
 
-public class StateDataConsumer implements Consumer<String, Double> {
+public class StateDataConsumer implements MessageConsumer<String, Double> {
 
     private final Logger log = LoggerFactory.getLogger(StateDataConsumer.class);
 
@@ -36,18 +36,14 @@ public class StateDataConsumer implements Consumer<String, Double> {
             log.info("Listening to topic {}", this.topic);
             while (System.currentTimeMillis() - startTime < 45000) {
                 ConsumerRecords<String, Double> records = consumer.poll(Duration.ofMillis(100));
-                records.forEach(this::processRecord);
+                for(ConsumerRecord<String, Double> record : records) {
+                    process(record, log::info);
+                }
             }
             log.info("Stopped consuming from topic {}", this.topic);
         } finally {
             assert consumer != null;
             consumer.close();
         }
-    }
-
-    @Override
-    public void processRecord(ConsumerRecord<String, Double> record) {
-        log.info("Received key: {}, value: {} from partition: {}",
-                record.key(), record.value(), record.partition());
     }
 }

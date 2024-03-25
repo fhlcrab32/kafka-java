@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 public class AlbumConsumer implements MessageConsumer<Double, Album> {
 
-    private final Logger log = LoggerFactory.getLogger(LogConsumer.class);
+    private final Logger log = LoggerFactory.getLogger(AlbumConsumer.class);
     private final KafkaConfig kafkaConfig;
     private final Topic topic;
 

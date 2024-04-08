@@ -36,6 +36,7 @@ public class LogProducer implements MessageProducer<Double, String> {
 
     @Override
     public void send(Double key, String message) {
+        log.info("Sending messages to topic {}", topic);
         try(KafkaProducer<Double, String> producer = kafkaConfig.buildProducer(topic)) {
             send(this.topic, key, message, producer, log);
         } catch (SerializationException | InterruptException e) {

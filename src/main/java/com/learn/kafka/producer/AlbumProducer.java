@@ -36,6 +36,7 @@ public class AlbumProducer implements MessageProducer<Double, Album> {
 
     @Override
     public void send(Double key, Album message) {
+        log.info("Sending messages to topic {}", topic);
         try(KafkaProducer<Double, Album> producer = kafkaConfig.buildProducer(topic)) {
             send(this.topic, key, message, producer, log);
         } catch (SerializationException | InterruptException e) {

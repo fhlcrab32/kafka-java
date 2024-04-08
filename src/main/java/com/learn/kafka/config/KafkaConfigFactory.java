@@ -1,5 +1,6 @@
 package com.learn.kafka.config;
 
+import com.learn.kafka.constants.KafkaConstants;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
@@ -34,7 +35,7 @@ public class KafkaConfigFactory {
                 properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
                         KafkaAvroSerializer.class.getName());
                 properties.setProperty(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG,
-                        "http://localhost:8081");
+                        KafkaConstants.SCHEMA_REGISTRY_URL);
             }
         }
     }
@@ -59,7 +60,7 @@ public class KafkaConfigFactory {
                properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
                        KafkaAvroDeserializer.class.getName());
                properties.setProperty(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG,
-                       "http://localhost:8081");
+                       KafkaConstants.SCHEMA_REGISTRY_URL);
            }
         }
     }

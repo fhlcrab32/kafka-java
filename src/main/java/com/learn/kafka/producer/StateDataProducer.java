@@ -43,6 +43,7 @@ public class StateDataProducer implements MessageProducer<String, Double> {
 
     @Override
     public void send(String key, Double message) {
+        log.info("Sending messages to topic {}", topic);
         try(KafkaProducer<String, Double> producer = kafkaConfig.buildProducer(topic)) {
             send(this.topic, key, message, producer, log);
         } catch (SerializationException | InterruptException e) {

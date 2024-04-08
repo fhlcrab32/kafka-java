@@ -1,5 +1,6 @@
 package com.learn.kafka.config;
 
+import com.learn.kafka.constants.KafkaConstants;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -14,9 +15,7 @@ public class KafkaConfig {
 
     private final KafkaConfigFactory kafkaConfigFactory;
 
-    private final String bootstrapServers = "http://localhost:9092,http://localhost:9093,http://localhost:9094";
-
-    private KafkaConfig(KafkaConfigFactory kafkaConfigFactory) {
+    protected KafkaConfig(KafkaConfigFactory kafkaConfigFactory) {
         this.kafkaConfigFactory = kafkaConfigFactory;
     }
 
@@ -35,19 +34,21 @@ public class KafkaConfig {
         return new KafkaConsumer<>(loadConsumerProperties(topic));
     }
 
+
+
     private Properties loadProducerProperties(Topic topic) {
-        Properties properties = new Properties();
-        properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, this.bootstrapServers);
-        kafkaConfigFactory.buildSerializers(properties, topic);
-        return properties;
+        Properties props = new Properties();
+        props.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KafkaConstants.BOOTSTRAP_SERVERS);
+        kafkaConfigFactory.buildSerializers(props, topic);
+        return props;
     }
 
     private Properties loadConsumerProperties(Topic topic) {
-        Properties properties = new Properties();
-        properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, this.bootstrapServers);
-        properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, "group1");
-        properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        kafkaConfigFactory.buildDeserializers(properties, topic);
-        return properties;
+        Properties props = new Properties();
+        props.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KafkaConstants.BOOTSTRAP_SERVERS);
+        props.setProperty(ConsumerConfig.GROUP_ID_CONFIG, topic + "_group1");
+        props.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, KafkaConstants.AUTO_OFFSET_RESET_DEFAULT);
+        kafkaConfigFactory.buildDeserializers(props, topic);
+        return props;
     }
 }

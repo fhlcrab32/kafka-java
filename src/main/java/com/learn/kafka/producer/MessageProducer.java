@@ -13,6 +13,16 @@ public interface MessageProducer<T,U> {
 
     void send(T key, U message);
 
+    default void produce() {
+        try {
+            Thread.sleep(1000);
+            getSourceData().forEach(this::send);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
     default void send(Topic topic, T key, U message, KafkaProducer<T, U> producer,
                       Logger log) {
         ProducerRecord<T, U> producerRecord = new ProducerRecord<>(
@@ -25,11 +35,6 @@ public interface MessageProducer<T,U> {
                 log.info("Sending message {}: {}", key, message.toString());
             } else {
                 log.error("Sending failed for key: {}, message: {}", key, message, e);
-            }
-            try {
-                Thread.sleep(200);
-            } catch (InterruptedException ex) {
-                log.error("InterruptedException thrown while sleeping", e);
             }
         });
     }
